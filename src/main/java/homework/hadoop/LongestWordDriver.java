@@ -19,7 +19,7 @@ public class LongestWordDriver extends Configured implements Tool {
 
     @Override
     public int run(String[] strings) throws Exception {
-        Configuration conf = new Configuration();
+        Configuration conf = getConf();
         Job job = Job.getInstance(conf, "The longest word");
         job.setJarByClass(LongestWordDriver.class);
         job.setMapperClass(WordMapper.class);
@@ -36,12 +36,7 @@ public class LongestWordDriver extends Configured implements Tool {
     }
 
     public static void main(String[] args) throws Exception {
-        Configuration conf = new Configuration();
-        conf.set("fs.defaultFS", "file:///");
-        conf.set("mapreduce.framework.name", "local");
-        conf.setInt("mapreduce.task.io.sort.mb", 1);
         LongestWordDriver driver = new LongestWordDriver();
-        driver.setConf(conf);
         int exitCode = ToolRunner.run(driver, args);
         System.exit(exitCode);
     }
