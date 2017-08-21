@@ -12,7 +12,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.StringTokenizer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -49,16 +48,15 @@ public class LongestWordDriverTest {
             String line;
             int amountOfLines  = 0;
             while ((line = reader.readLine()) != null) {
-                checkLine(line);
+                verifyLine(line);
                 amountOfLines++;
-                System.out.println(line);
             }
-            assertThat(amountOfLines)
-                    .isEqualTo(EXPECTED_AMOUNT_OF_LINES)
-                    .withFailMessage("Only %s lines in the file are expected. Actual amount: %s",
-                                     EXPECTED_AMOUNT_OF_LINES,
-                                     amountOfLines);
+            verifyAmountOfLines(amountOfLines);
         }
+    }
+
+    private static void verifyLine(String line) {
+        assertThat(in(line, EXPECTED_WORDS));
     }
 
     private static boolean in(String value, String... inArray) {
@@ -70,21 +68,17 @@ public class LongestWordDriverTest {
         return false;
     }
 
-    private static void checkLine(String line) {
-        StringTokenizer itr = new StringTokenizer(line, "\t");
-        assertThat(itr.hasMoreTokens()).withFailMessage("The line format is not correct. Line: %s", line);
-        String key = itr.nextToken();
-        assertThat(itr.hasMoreTokens()).withFailMessage("The line format is not correct. Line: %s", line);
-        String value = itr.nextToken();
-        assertThat(!itr.hasMoreTokens()).withFailMessage("The line format is not correct. Line: %s", line);
-        assertThat(key).isEqualTo(EXPECTED_MAX_LENGTH);
-        assertThat(in(value, EXPECTED_WORDS));
+    private void verifyAmountOfLines(int amountOfLines) {
+        assertThat(amountOfLines)
+                .isEqualTo(EXPECTED_AMOUNT_OF_LINES)
+                .withFailMessage("Only %s lines in the file are expected. Actual amount: %s",
+                                 EXPECTED_AMOUNT_OF_LINES,
+                                 amountOfLines);
     }
 
     private static final String INPUT = "input";
     private static final String OUTPUT = "output";
     private static final String OUTPUT_FILE_NAME = "part-r-00000";
     private static final int EXPECTED_AMOUNT_OF_LINES = 3;
-    private static final String EXPECTED_MAX_LENGTH = "5";
     private static final String[] EXPECTED_WORDS = {"three", "seven", "eight"};
 }

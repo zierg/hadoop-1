@@ -1,35 +1,28 @@
 package test.homework.hadoop;
 
 import homework.hadoop.WordReducer;
-import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mrunit.mapreduce.ReduceDriver;
 import org.junit.Test;
 
-import javax.util.streamex.StreamEx;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 public class WordReducerTest {
 
     @Test
     public void testLongestWord() throws IOException {
-        new ReduceDriver<IntWritable, Text, IntWritable, Text>()
+        List<NullWritable> nullWritable = Arrays.asList(NullWritable.get(), NullWritable.get());
+        new ReduceDriver<Text, NullWritable, Text, NullWritable>()
                 .withReducer(new WordReducer())
-                .withInput(toInt(6), text("rabbit", "parrot"))
-                .withInput(toInt(4), text("doge", "frog"))
-                .withOutput(toInt(6), new Text("rabbit"))
-                .withOutput(toInt(6), new Text("parrot"))
+                .withInput(new Text("rabbit"), nullWritable)
+                .withInput(new Text("parrot"), nullWritable)
+                .withInput(new Text("doge"), nullWritable)
+                .withInput(new Text("frog"), nullWritable)
+                .withOutput(new Text("rabbit"), NullWritable.get())
+                .withOutput(new Text("parrot"), NullWritable.get())
                 .runTest(false);
-    }
-
-    private IntWritable toInt(int value) {
-        return new IntWritable(value);
-    }
-
-    private List<Text> text(String... values) {
-        return StreamEx.of(values)
-                .map(Text::new)
-                .toList();
     }
 }

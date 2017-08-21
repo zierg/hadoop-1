@@ -6,7 +6,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
@@ -14,6 +14,8 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
+// java -jar homework-1-the-longest-word-1.0-SNAPSHOT-all.jar input output
+// hadoop jar homework-1-the-longest-word-1.0-SNAPSHOT-all.jar input output
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class LongestWordDriver extends Configured implements Tool {
 
@@ -24,9 +26,10 @@ public class LongestWordDriver extends Configured implements Tool {
         job.setJarByClass(LongestWordDriver.class);
         job.setMapperClass(WordMapper.class);
         job.setReducerClass(WordReducer.class);
-        job.setOutputKeyClass(IntWritable.class);
-        job.setSortComparatorClass(DescendingComparator.class);
-        job.setOutputValueClass(Text.class);
+        job.setSortComparatorClass(WordLengthDescendingComparator.class);
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(NullWritable.class);
+        job.setNumReduceTasks(1);
         FileInputFormat.addInputPath(job, new Path(strings[0]));
         Path outputDir = new Path(strings[1]);
         FileSystem fs = FileSystem.getLocal(conf);

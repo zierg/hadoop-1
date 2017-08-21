@@ -3,6 +3,7 @@ package homework.hadoop;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
@@ -12,7 +13,7 @@ import java.util.Set;
 import java.util.StringTokenizer;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class WordMapper extends Mapper<Object, Text, IntWritable, Text> {
+public class WordMapper extends Mapper<Object, Text, Text, NullWritable> {
 
     @Override
     public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
@@ -32,18 +33,17 @@ public class WordMapper extends Mapper<Object, Text, IntWritable, Text> {
                 words.add(tokenWord);
             }
         }
-        writeWords(context, maxLength, words);
+        writeWords(context, words);
     }
 
-    private void writeWords(Context context, int maxLength, Set<String> words) {
-        maxLengthWritable.set(maxLength);
+    private void writeWords(Context context, Set<String> words) {
         words.forEach(tokenWord -> writeWord(context, tokenWord));
     }
 
     private void writeWord(Context context, String tokenWord) {
         word.set(tokenWord);
         try {
-            context.write(maxLengthWritable, word);
+            context.write(word, NullWritable.get());
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
