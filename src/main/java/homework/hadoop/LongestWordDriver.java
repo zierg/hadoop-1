@@ -25,6 +25,7 @@ public class LongestWordDriver extends Configured implements Tool {
         Job job = Job.getInstance(conf, "The longest word");
         job.setJarByClass(LongestWordDriver.class);
         job.setMapperClass(WordMapper.class);
+        job.setCombinerClass(WordReducer.class);
         job.setReducerClass(WordReducer.class);
         job.setSortComparatorClass(WordLengthDescendingComparator.class);
         job.setOutputKeyClass(Text.class);
