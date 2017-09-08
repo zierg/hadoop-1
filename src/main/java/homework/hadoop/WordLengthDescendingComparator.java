@@ -12,7 +12,7 @@ import org.apache.hadoop.io.WritableUtils;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class WordLengthDescendingComparator extends WritableComparator {
 
-    protected WordLengthDescendingComparator() {
+    public WordLengthDescendingComparator() {
         super(Text.class);
     }
 
